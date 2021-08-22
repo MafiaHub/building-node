@@ -68,6 +68,8 @@ def post_process(paths=['Debug', 'Release']):
                 os.path.join(libFolder, "libnode_snapshot.a")
             ] + glob.glob(additional_obj_glob))
 
+post_process()
+
 shutil.copytree(os.path.join(nodeSrcFolder, 'include'), os.path.join(resultFolder, 'include'))
 shutil.copyfile('CMakeLists.txt', os.path.join(resultFolder, 'CMakeLists.txt'))
 
