@@ -1,0 +1,102 @@
+name: Build a new github release with both debug / release libraries
+
+on: workflow_dispatch
+
+env:
+  NODE_TARGET_VERSION: v16.6.1
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [macos-10.15, windows-2019, ubuntu-18.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '11.2.1'
+        if: runner.os == 'macOS'
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install nasm on Windows
+        run: choco install -y nasm
+        if: runner.os == 'Windows'
+
+      - name: Install GNU patch on Windows
+        run: choco install -y patch
+        if: runner.os == 'Windows'
+
+      - name: Install ninja on macOS
+        run: HOMEBREW_NO_AUTO_UPDATE=1 brew install ninja
+        if: runner.os == 'macOS'
+
+      - name: Install ninja on Ubuntu
+        run: sudo apt-get install -y ninja-build
+        if: runner.os == 'Linux'
+
+      - name: Download node.js source code
+        run: python -m scripts.download
+
+      - name: Patch source code of Node.js
+        run: python -m scripts.patch
+
+      - name: Build the libraries
+        run: python -m scripts.build
+
+      - name: Copy headers from the include dir
+        run: python -m scripts.headers
+
+      - uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Trigger the post processing and organize the folders
+        run: python -m scripts.postproc
+
+      - name: Archive
+        run: |
+          zipname=$(python -m scripts.archive)
+          echo "::set-output name=zipname::$zipname"
+        shell: bash
+        id: archive
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ steps.archive.outputs.zipname }}
+          path: ${{ steps.archive.outputs.zipname }}
+  
+  gh_release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+      - name: Compute checksums
+        run: |
+          mkdir zips
+          mv ./*/*.zip ./zips
+          cd zips
+          echo '## SHA-1 Checksums' > ../release_notes.md
+          echo '```' >> ../release_notes.md
+          sha1sum --binary *.zip >> ../release_notes.md
+          echo '```' >> ../release_notes.md
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.NODE_TARGET_VERSION }}
+          release_name: ${{ env.NODE_TARGET_VERSION }}
+          body_path: release_notes.md
+      - name: Upload release assets
+        uses: csexton/release-asset-action@v2
+        with:
+          pattern: "zips/*.zip"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          release-url: ${{ steps.create_release.outputs.upload_url }}
