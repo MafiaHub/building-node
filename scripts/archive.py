@@ -8,10 +8,10 @@ from . import config
 zipBasename = 'libnode-{}-{}-{}{}'.format(
     config.nodeVersion,
     sys.platform,
-    'x86' if config.x86 else 'x64',
+    config.nodeTargetConfig,
     config.zipBasenameSuffix
 )
 
-shutil.make_archive(zipBasename, 'zip', base_dir='libnode')
+shutil.make_archive(zipBasename, 'zip', base_dir='libnode//' + config.nodeTargetConfig)
 
 print(zipBasename + '.zip')

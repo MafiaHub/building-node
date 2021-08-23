@@ -15,26 +15,31 @@ if sys.platform == 'win32':
     env = os.environ.copy()
     env['config_flags'] = ' '.join(configureArgvs)
 
-    print("==============BUILDING RELEASE LIBRARIES=================")
 
-    subprocess.check_call(
-        ['cmd', '/c', 'vcbuild.bat', 'release'],
-        env=env
-    )
-
-    print("==============BUILDING DEBUG LIBRARIES=================")
-    
-    subprocess.check_call(
-        ['cmd', '/c', 'vcbuild.bat', 'debug'],
-        env=env
-    )
+    if config.nodeTargetConfig == 'Release':
+        print("==============BUILDING RELEASE LIBRARIES=================")
+        subprocess.check_call(
+            ['cmd', '/c', 'vcbuild.bat', 'release'],
+            env=env
+        )
+    elif config.nodeTargetConfig == 'Debug':
+        print("==============BUILDING DEBUG LIBRARIES=================")
+        subprocess.check_call(
+            ['cmd', '/c', 'vcbuild.bat', 'debug'],
+            env=env
+        )
+    else:
+        print("======UNKNOWN=======")
 else:
     # Build as release
-    print("==============BUILDING RELEASE LIBRARIES=================")
-    subprocess.check_call([ sys.executable, 'configure.py', '--ninja' ] + configureArgvs)
-    subprocess.check_call(['ninja', '-C', 'out/Release'])
-
+    if config.nodeTargetConfig == 'Release':
+        print("==============BUILDING RELEASE LIBRARIES=================")
+        subprocess.check_call([ sys.executable, 'configure.py', '--ninja' ] + configureArgvs)
+        subprocess.check_call(['ninja', '-C', 'out/Release'])
+    elif config.nodeTargetConfig == 'Debug':
     # Build as debug
-    print("==============BUILDING DEBUG LIBRARIES=================")
-    subprocess.check_call([ sys.executable, 'configure.py', '--ninja', '--debug' ] + configureArgvs)
-    subprocess.check_call(['ninja', '-C', 'out/Debug'])
+        print("==============BUILDING DEBUG LIBRARIES=================")
+        subprocess.check_call([ sys.executable, 'configure.py', '--ninja', '--debug' ] + configureArgvs)
+        subprocess.check_call(['ninja', '-C', 'out/Debug'])
+    else:
+        print("==========UNKNOWN=========")
