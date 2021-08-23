@@ -67,6 +67,3 @@ else:
     ] + glob.glob(additional_obj_glob))
 
 shutil.copytree(os.path.join(nodeSrcFolder, 'include'), os.path.join(resultFolder, 'include'))
-
-with open(os.path.join(resultFolder, 'dummy.c'), "w") as dummy_c_file:
-    print("void libnode_dummy_func() { }", file=dummy_c_file)
