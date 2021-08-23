@@ -12,7 +12,7 @@ os.chdir('node-{}'.format(config.nodeVersion))
 configureArgvs = [ '--enable-static', '--without-node-options' ] + config.configFlags
 
 if config.nodeTargetConfig == 'Debug':
-    configureArgvs.append(['--debug-nghttp2', '--debug-lib'])
+    configureArgvs = configureArgvs + ['--debug-nghttp2', '--debug-lib']
 
 if sys.platform == 'win32':
     env = os.environ.copy()
