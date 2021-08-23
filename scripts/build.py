@@ -28,7 +28,7 @@ if sys.platform == 'win32':
     elif config.nodeTargetConfig == 'Debug':
         print("==============BUILDING DEBUG LIBRARIES=================")
         subprocess.check_call(
-            ['cmd', '/c', 'vcbuild.bat', 'debug', 'debug-nghttp2', 'debug-http2', 'x86'],
+            ['cmd', '/c', 'vcbuild.bat', 'debug', 'debug-nghttp2', 'x86'],
             env=env
         )
     else:
