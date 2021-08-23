@@ -23,20 +23,18 @@ def filterLibFile(filename):
     return 'gtest' not in filename and 'v8_nosnapshot' not in filename and 'v8_init' not in filename and 'icutools' not in filename
 
 path = config.nodeTargetConfig
-libFolderPath = libFolder + '\\' + path
-os.mkdir(libFolderPath)
 if sys.platform == 'win32':
     for libFile in os.scandir(nodeSrcFolder + '\\out\\' + path + '\\lib'):
         if libFile.is_file() and libFile.name.endswith('.lib') and filterLibFile(libFile.name):
             print('Copying', libFile.name)
-            shutil.copy(libFile.path, libFolderPath)
+            shutil.copy(libFile.path, libFolder)
 elif sys.platform == 'darwin':
     for libFile in os.scandir(nodeSrcFolder + '/out/' + path):
         if libFile.is_file() and libFile.name.endswith('.a') and filterLibFile(libFile.name):
             print('Copying', libFile.name)
-            shutil.copy(libFile.path, libFolderPath)
+            shutil.copy(libFile.path, libFolder)
             print('Striping', libFile.name)
-            subprocess.check_call(['strip', '-x', os.path.join(libFolderPath, libFile.name)])
+            subprocess.check_call(['strip', '-x', os.path.join(libFolder, libFile.name)])
 elif sys.platform == 'linux':
     for dirname, _, basenames in os.walk(nodeSrcFolder + '/out/' + path + '/obj'):
         for basename in basenames:
@@ -44,7 +42,7 @@ elif sys.platform == 'linux':
                 subprocess.run(
                     'ar -t {} | xargs ar rs {}'.format(
                         os.path.join(dirname, basename),
-                        os.path.join(libFolderPath, basename)
+                        os.path.join(libFolder, basename)
                     ),
                     check=True, shell=True
                 )
@@ -55,7 +53,7 @@ if sys.platform == 'win32':
 
 if sys.platform == 'win32':
     subprocess.check_call([
-            'lib', '/OUT:' + os.path.join(libFolderPath, "libnode_snapshot.lib")
+            'lib', '/OUT:' + os.path.join(libFolder, "libnode_snapshot.lib")
         ] + 
         glob.glob(additional_obj_glob) + 
         glob.glob(nodeSrcFolder + '/out/' + path + '/obj/node_mksnapshot/tools/msvs/pch/*.obj')
