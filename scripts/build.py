@@ -9,7 +9,7 @@ from . import config
 
 os.chdir('node-{}'.format(config.nodeVersion))
 
-configureArgvs = [ '--enable-static', '--without-node-options' ] + config.configFlags
+configureArgvs = [ '--enable-static', '--without-node-options', '--dest-cpu=x86' ] + config.configFlags
 
 if sys.platform == 'win32':
     env = os.environ.copy()
@@ -19,13 +19,13 @@ if sys.platform == 'win32':
     if config.nodeTargetConfig == 'Release':
         print("==============BUILDING RELEASE LIBRARIES=================")
         subprocess.check_call(
-            ['cmd', '/c', 'vcbuild.bat', 'release'],
+            ['cmd', '/c', 'vcbuild.bat', 'release', 'x86'],
             env=env
         )
     elif config.nodeTargetConfig == 'Debug':
         print("==============BUILDING DEBUG LIBRARIES=================")
         subprocess.check_call(
-            ['cmd', '/c', 'vcbuild.bat', 'debug'],
+            ['cmd', '/c', 'vcbuild.bat', 'debug', 'x86'],
             env=env
         )
     else:
