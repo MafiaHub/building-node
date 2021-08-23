@@ -11,6 +11,9 @@ os.chdir('node-{}'.format(config.nodeVersion))
 
 configureArgvs = [ '--enable-static', '--without-node-options' ] + config.configFlags
 
+if config.nodeTargetConfig == 'Debug':
+    configureArgvs.append(['--debug-nghttp2', '--debug-lib'])
+
 if sys.platform == 'win32':
     env = os.environ.copy()
     env['config_flags'] = ' '.join(configureArgvs)
@@ -25,7 +28,7 @@ if sys.platform == 'win32':
     elif config.nodeTargetConfig == 'Debug':
         print("==============BUILDING DEBUG LIBRARIES=================")
         subprocess.check_call(
-            ['cmd', '/c', 'vcbuild.bat', 'debug', 'x86'],
+            ['cmd', '/c', 'vcbuild.bat', 'debug', 'debug-nghttp2', 'debug-http2', 'x86'],
             env=env
         )
     else:
