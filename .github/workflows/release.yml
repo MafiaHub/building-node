@@ -3,7 +3,7 @@ name: Build a new github release with both debug / release libraries
 on: workflow_dispatch
 
 env:
-  NODE_TARGET_VERSION: v15.9.0
+  NODE_TARGET_VERSION: v15.1.0
 
 jobs:
   build:
