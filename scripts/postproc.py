@@ -65,3 +65,4 @@ else:
     ] + glob.glob(additional_obj_glob))
 
 shutil.copytree(os.path.join(nodeSrcFolder, 'include'), os.path.join(resultFolder, 'include'))
+shutil.copytree(os.path.join(nodeSrcFolder, 'deps'), os.path.join(resultFolder, 'deps'))
