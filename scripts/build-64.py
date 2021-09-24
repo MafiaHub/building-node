@@ -33,16 +33,3 @@ if sys.platform == 'win32':
         )
     else:
         print("======UNKNOWN=======")
-else:
-    # Build as release
-    if config.nodeTargetConfig == 'Release':
-        print("==============BUILDING RELEASE LIBRARIES=================")
-        subprocess.check_call([ sys.executable, 'configure.py', '--ninja' ] + configureArgvs)
-        subprocess.check_call(['ninja', '-C', 'out/Release'])
-    elif config.nodeTargetConfig == 'Debug':
-    # Build as debug
-        print("==============BUILDING DEBUG LIBRARIES=================")
-        subprocess.check_call([ sys.executable, 'configure.py', '--ninja', '--debug' ] + configureArgvs)
-        subprocess.check_call(['ninja', '-C', 'out/Debug'])
-    else:
-        print("==========UNKNOWN=========")
