@@ -316,7 +316,7 @@ def removeList(count=0):
             erritems = fi.readlines()
             fi.close()
             #Item zone/zh_Hant_TW.res depends on missing item zone/zh_Hant.res
-            pat = re.compile(bytes(r"^Item ([^ ]+) depends on missing item ([^ ]+).*"))
+            pat = re.compile(bytes(r"^Item ([^ ]+) depends on missing item ([^ ]+).*").encode("utf-8"))
             for i in range(len(erritems)):
                 line = erritems[i].strip()
                 m = pat.match(line)
@@ -331,7 +331,7 @@ def removeList(count=0):
             if(options.verbose > 5):
                 print(" now %d items to remove" % len(remove))
             if(oldcount == len(remove)):
-                print(" ERROR: could not add any more items to remove. Fail.")
+                print(" ERROR: could not add any mor eitems to remove. Fail.")
                 sys.exit(1)
             removeList(count+1)
 
