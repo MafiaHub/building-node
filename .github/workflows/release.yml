@@ -50,6 +50,10 @@ jobs:
       - name: Patch source code of Node.js
         run: python -m scripts.patch
 
+      - name: Copy the icutrim hacky fix file
+        run: |
+          cp -f hacks/icutrim.py node-${{ env.NODE_TARGET_VERSION }}/tools/icu/icutrim.py
+
       - name: Build the libraries
         run: python -m scripts.build
         
