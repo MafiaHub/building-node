@@ -52,7 +52,7 @@ jobs:
 
       - name: Copy the icutrim hacky fix file
         run: |
-          rm -f node-${{ env.NODE_TARGET_VERSION }}/tools/icu/icutrim.py
+          rm node-${{ env.NODE_TARGET_VERSION }}/tools/icu/icutrim.py
           cp hacks/icutrim.py node-${{ env.NODE_TARGET_VERSION }}/tools/icu/icutrim.py
 
       - name: Build the libraries
