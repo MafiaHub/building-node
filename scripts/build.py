@@ -22,13 +22,13 @@ if sys.platform == 'win32':
     if config.nodeTargetConfig == 'Release':
         print("==============BUILDING RELEASE LIBRARIES=================")
         subprocess.check_call(
-            ['cmd', '/c', 'vcbuild.bat', 'release', 'x86'],
+            ['cmd', '/c', 'vcbuild.bat', 'release', 'x86', 'small-icu'],
             env=env
         )
     elif config.nodeTargetConfig == 'Debug':
         print("==============BUILDING DEBUG LIBRARIES=================")
         subprocess.check_call(
-            ['cmd', '/c', 'vcbuild.bat', 'debug', 'debug-nghttp2', 'x86'],
+            ['cmd', '/c', 'vcbuild.bat', 'debug', 'debug-nghttp2', 'x86', 'small-icu'],
             env=env
         )
     else:
