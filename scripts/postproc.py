@@ -20,17 +20,18 @@ os.mkdir(resultFolder)
 os.mkdir(libFolder)
 
 def filterLibFile(filename):
-    return 'gtest' not in filename and 'v8_nosnapshot' not in filename and 'v8_init' not in filename and 'icutools' not in filename
+    return True
+    #return 'gtest' not in filename and 'v8_nosnapshot' not in filename and 'v8_init' not in filename and 'icutools' not in filename
 
 path = config.nodeTargetConfig
 if sys.platform == 'win32':
     for libFile in os.scandir(nodeSrcFolder + '\\out\\' + path + '\\lib'):
-        if libFile.is_file() and libFile.name.endswith('.lib') and filterLibFile(libFile.name):
+        if libFile.is_file() and (libFile.name.endswith('.lib') or libFile.name.endswith('.dll')) and filterLibFile(libFile.name):
             print('Copying', libFile.name)
             shutil.copy(libFile.path, libFolder)
 elif sys.platform == 'darwin':
     for libFile in os.scandir(nodeSrcFolder + '/out/' + path):
-        if libFile.is_file() and libFile.name.endswith('.a') and filterLibFile(libFile.name):
+        if libFile.is_file() and (libFile.name.endswith('.a') or libFile.name.endswith('.dylib')) and filterLibFile(libFile.name):
             print('Copying', libFile.name)
             shutil.copy(libFile.path, libFolder)
             print('Striping', libFile.name)
@@ -38,7 +39,7 @@ elif sys.platform == 'darwin':
 elif sys.platform == 'linux':
     for dirname, _, basenames in os.walk(nodeSrcFolder + '/out/' + path + '/obj'):
         for basename in basenames:
-            if basename.endswith('.a') and filterLibFile(basename):
+            if (basename.endswith('.a') or basename.endswith('.so')) and filterLibFile(basename):
                 subprocess.run(
                     'ar -t {} | xargs ar rs {}'.format(
                         os.path.join(dirname, basename),
