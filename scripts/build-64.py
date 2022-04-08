@@ -9,7 +9,7 @@ from . import config
 
 os.chdir('node-{}'.format(config.nodeVersion))
 
-configureArgvs = [ '--enable-static', '--without-node-options' ] + config.configFlags
+configureArgvs = config.configFlags
 
 if config.nodeTargetConfig == 'Debug':
     configureArgvs = configureArgvs + ['--debug-nghttp2', '--debug-lib']
